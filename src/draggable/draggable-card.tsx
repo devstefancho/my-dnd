@@ -1,15 +1,9 @@
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
-import { DraggableItem } from "./draggable-list.hook";
 import styled from "styled-components";
+import { DragItem } from "@/recoil/draggable.atom";
 
-const DraggableCard = ({
-  item,
-  index,
-}: {
-  item: DraggableItem;
-  index: number;
-}) => {
+const DraggableCard = ({ item, index }: { item: DragItem; index: number }) => {
   return (
     <Draggable key={item.id} draggableId={item.id} index={index}>
       {(provided) => (
@@ -24,6 +18,7 @@ const DraggableCard = ({
     </Draggable>
   );
 };
+
 const StyledItem = styled.div`
   padding: 10px;
   border: 1px solid #ccc;

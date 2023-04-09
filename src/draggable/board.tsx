@@ -1,14 +1,17 @@
 import { Droppable } from "react-beautiful-dnd";
 import styled from "styled-components";
-import { DraggableItem } from "./draggable-list.hook";
+import { DragItems } from "@/recoil/draggable.atom";
 import DraggableCard from "./draggable-card";
+import useDraggableList from "./draggable.hook";
 
-const Board = ({ items }: { items: DraggableItem[] }) => {
+const Board = ({ boardKey }: { boardKey: keyof DragItems }) => {
+  const { dragItemsInBoards } = useDraggableList();
+
   return (
-    <Droppable droppableId="droppable-0">
+    <Droppable droppableId={String(boardKey)}>
       {(provided) => (
         <StyledContainer {...provided.droppableProps} ref={provided.innerRef}>
-          {items.map((item, index) => (
+          {dragItemsInBoards[boardKey].map((item, index) => (
             <DraggableCard item={item} index={index} />
           ))}
           {provided.placeholder}
@@ -23,9 +26,9 @@ const StyledContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%;
-  background-color: #f5f5f5;
+  background-color: #fff;
   padding: 20px;
+  border-radius: 5px;
 `;
 
 export default Board;

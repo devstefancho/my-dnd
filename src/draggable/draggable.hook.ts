@@ -1,21 +1,12 @@
+import { dragItemsInBoardsAtom } from "@/recoil/draggable.atom";
 import { useEffect, useState } from "react";
-
-const defaultItems = [
-  { id: "draggable-1", content: "1 task" },
-  { id: "draggable-2", content: "2 task" },
-  { id: "draggable-3", content: "3 task" },
-  { id: "draggable-4", content: "4 task" },
-  { id: "draggable-5", content: "5 task" },
-];
-
-export type DraggableItem = {
-  id: string;
-  content: string;
-};
+import { useRecoilState } from "recoil";
 
 const useDraggableList = () => {
   const [ready, setReady] = useState(false);
-  const [items, setItems] = useState(defaultItems);
+  const [dragItemsInBoards, setDragItemsInBoards] = useRecoilState(
+    dragItemsInBoardsAtom
+  );
 
   useEffect(() => {
     /**
@@ -27,8 +18,8 @@ const useDraggableList = () => {
 
   return {
     ready,
-    items,
-    setItems,
+    dragItemsInBoards,
+    setDragItemsInBoards,
   };
 };
 
