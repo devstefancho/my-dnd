@@ -1,6 +1,5 @@
-import dynamic from "next/dynamic";
-import React, { useEffect, useState } from "react";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import React from "react";
+import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import styled from "styled-components";
 import Board from "./board";
 import useDraggableList from "./draggable.hook";
@@ -12,19 +11,37 @@ const DraggableList = () => {
     return <div>Loading...</div>;
   }
 
+  const onDragEnd = ({ destination, source }: DropResult) => {
+    if (!destination) return;
+
+    // Board Id가 같은 경우
+    if (destination.droppableId === source.droppableId) {
+      const items = [...dragItemsInBoards[source.droppableId]];
+      const [reorderedItem] = items.splice(source.index, 1);
+      items.splice(destination.index, 0, reorderedItem);
+      setDragItemsInBoards((prev) => ({
+        ...prev,
+        [source.droppableId]: items,
+      }));
+    }
+
+    // Board Id가 다른 경우
+    if (destination.droppableId !== source.droppableId) {
+      const items = [...dragItemsInBoards[source.droppableId]];
+      const [reorderedItem] = items.splice(source.index, 1);
+      const destinationItems = [...dragItemsInBoards[destination.droppableId]];
+      destinationItems.splice(destination.index, 0, reorderedItem);
+      setDragItemsInBoards((prev) => ({
+        ...prev,
+        [source.droppableId]: items,
+        [destination.droppableId]: destinationItems,
+      }));
+    }
+  };
+
   return (
     <Container>
-      <DragDropContext
-        onDragEnd={(result) => {
-          console.log(result);
-          // setItems((prev) => {
-          //   const newItems = [...prev];
-          //   const [reorderedItem] = newItems.splice(result.source.index, 1);
-          //   newItems.splice(result?.destination?.index!, 0, reorderedItem);
-          //   return newItems;
-          // });
-        }}
-      >
+      <DragDropContext onDragEnd={onDragEnd}>
         {Object.keys(dragItemsInBoards).map((boardKey) => (
           <Board key={boardKey} boardKey={boardKey} />
         ))}
