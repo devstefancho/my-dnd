@@ -8,6 +8,11 @@ const defaultItems = [
   { id: "draggable-5", content: "5 task" },
 ];
 
+export type DraggableItem = {
+  id: string;
+  content: string;
+};
+
 const useDraggableList = () => {
   const [ready, setReady] = useState(false);
   const [items, setItems] = useState(defaultItems);

@@ -1,8 +1,8 @@
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import styled from "styled-components";
-import useDraggableList from "./draggable-list.hook";
+import useDraggableList, { DraggableItem } from "./draggable-list.hook";
 
 const StyledItem = styled.div`
   padding: 10px;
@@ -25,6 +25,28 @@ const StyledContainer = styled.div`
   padding: 20px;
 `;
 
+const DraggableCard = React.memo(
+  ({ item, index }: { item: DraggableItem; index: number }) => {
+    return (
+      <Draggable
+        // adding a key is important!
+        key={item.id}
+        draggableId={item.id}
+        index={index}
+      >
+        {(provided) => (
+          <StyledItem
+            ref={provided.innerRef}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+          >
+            {item.content}
+          </StyledItem>
+        )}
+      </Draggable>
+    );
+  }
+);
 const DraggableList = () => {
   const { ready, items, setItems } = useDraggableList();
 
@@ -51,22 +73,7 @@ const DraggableList = () => {
               ref={provided.innerRef}
             >
               {items.map((item, index) => (
-                <Draggable
-                  // adding a key is important!
-                  key={item.id}
-                  draggableId={item.id}
-                  index={index}
-                >
-                  {(provided) => (
-                    <StyledItem
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                    >
-                      {item.content}
-                    </StyledItem>
-                  )}
-                </Draggable>
+                <DraggableCard item={item} index={index} />
               ))}
               {provided.placeholder}
             </StyledContainer>
